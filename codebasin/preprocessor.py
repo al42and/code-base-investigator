@@ -1371,6 +1371,12 @@ def macro_from_definition_string(string):
 
     # Any remaining tokens after an "=" are the macro expansion
     if not parser.eol():
+        try:  # Handle "typed" CMake definitions like -Dverbose:BOOL=OFF
+            parser.match_value(Operator, ":")
+        except ParseError:
+            pass
+        else:
+            parser.match_type(Identifier)
         parser.match_value(Operator, "=")
         expansion = parser.tokens[parser.pos:]
         parser.pos = len(parser.tokens)
