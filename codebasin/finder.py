@@ -131,14 +131,16 @@ def find(rootdir, codebase, configuration, *, summarize_only=True):
     # Build a tree for each unique file for all platforms.
     state = ParserState(summarize_only)
     for f in codebase["files"]:
-        state.insert_file(f)
+        if f not in codebase["exclude_files"]:
+            state.insert_file(f)
     for p in configuration:
         for e in configuration[p]:
-            if e['file'] not in codebase["files"]:
-                log.warning(
-                    "%s found in definition of platform %s but missing from codebase",
-                    e['file'], p)
-            state.insert_file(e['file'])
+            if e['file'] not in codebase["exclude_files"]:
+                if e['file'] not in codebase["files"]:
+                    log.warning(
+                        "%s found in definition of platform %s but missing from codebase",
+                        e['file'], p)
+                state.insert_file(e['file'])
 
     # Process each tree, by associating nodes with platforms
     for p in configuration:
