@@ -51,6 +51,8 @@ class ParserState():
         """
         if not self.merge_duplicates:
             return fn
+        if os.path.isdir(fn):
+            return fn
 
         # The first time we encounter a filename, store limited info
         bn = os.path.basename(fn)
@@ -147,6 +149,9 @@ def find(rootdir, codebase, configuration, *, summarize_only=True):
         for e in configuration[p]:
             file_platform = platform.Platform(p, rootdir)
 
+            if os.path.isdir(e['file']):
+                continue
+
             for path in e['include_paths']:
                 file_platform.add_include_path(path)
 
@@ -168,8 +173,10 @@ def find(rootdir, codebase, configuration, *, summarize_only=True):
                     associator.walk(file_platform, state)
 
             # Process the file, to build a list of associate nodes
-            associator = TreeAssociator(state.get_tree(e['file']),
-                                        state.get_map(e['file']))
-            associator.walk(file_platform, state)
+            tree = state.get_tree(e['file'])
+            if tree is not None:
+                associator = TreeAssociator(state.get_tree(e['file']),
+                                            state.get_map(e['file']))
+                associator.walk(file_platform, state)
 
     return state
