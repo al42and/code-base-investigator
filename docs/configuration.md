@@ -65,7 +65,7 @@ Additionally, the user may specify one each of the keys `defines` and `include_p
 
 #### Compilation Database Platform Specification
 
-Compilation databases are simple markup files that contain information about how a compiler was invoked. They are typically named `compilation_commands.json` and are located in the build directories of projects. There are tools for generating compilation databases for most build systems:
+Compilation databases are simple markup files that contain information about how a compiler was invoked. They are typically named `compile_commands.json` and are located in the build directories of projects. There are tools for generating compilation databases for most build systems:
 
 - CMake: add `-DCMAKE_EXPORT_COMPILE_COMMANDS` to the `cmake` invocation.
 - Ninja: invoke `ninja` with `-t compdb`.
